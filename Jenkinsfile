@@ -18,7 +18,7 @@ pipeline{
                 }
             }
         }
-        stage ("build"){
+        stage ("build") {
             steps{
                 sh 'mvn clean package'
             }
@@ -30,6 +30,7 @@ pipeline{
                     echo "====++++only when failed++++===="
                 }
             }
+        }    
           stage ("sonar scanning") {
             steps {
                 script { 
@@ -38,17 +39,15 @@ pipeline{
                         sh "${tool("SonarScanner")}/bin/sonar-scanner \
                         -Dsonar.projectKey=simple-java-maven-app \
                         -Dsonar.java.binaries=target \
-                        -Dsonar.host.url=http://3.90.210.22:9000/ \
+                        -Dsonar.host.url=http://54.198.175.171:9000/ \
                         -Dsonar.login=2f60a4d498a222e03738eddeddc43ce5796ea491"
-                }
-              }
+                    }
+               }
             }
-          }
-          stage ("Upload to Nexus") {
+        stage ("Upload to Nexus") {
             steps {
                 sh "mvn -gs ${WORKSPACE}/settings.xml deploy"
+            }
         }
-      }
     }
-  }
 }
