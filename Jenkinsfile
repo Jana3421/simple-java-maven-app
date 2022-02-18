@@ -1,83 +1,53 @@
-pipeline{ 
+pipeline{
     agent any 
     tools {
-        maven 'Maven3.8'
-        
-      }
+    maven 'Maven'
+    }
     stages{
-        stage("Checkout"){
+        stage("Checkout Code"){
             steps{
-                echo "========Checking out code========"
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'MyGithubaccount', url: 'https://github.com/vcroshan/simple-java-maven-app.git']]])
-                
+                echo "======== Code Checking Out ========"
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Jana3421/simple-java-maven-app.git']]])
             }
             post{
                 success{
-                    echo "========Code checkout completed successfully========"
+                    echo "========A executed successfully========"
                 }
                 failure{
-                    echo "========Code Checkout failed========"
+                    echo "========A execution failed========"
                 }
             }
         }
-        stage ("Execute script") {
-            steps {
-                sh '''
-                echo "WORKSPACE: ${WORKSPACE}"
-                echo "Jenkins Job Name: ${JOB_NAME}"
-                '''
-            }
-        }
-        stage ("Build"){
+        stage ("build") {
             steps{
-                
-                sh "mvn -B -DskipTests clean package"
+                sh 'mvn clean package'
             }
-            }
-        stage ("Test"){
-            steps{
-                
-                sh "mvn test"
-            }
-            post {
-                success {
-                    junit "target/surefire-reports/**/*.xml"
+            post{
+                success{
+                    echo "====++++only when successful++++===="
+                }
+                failure{
+                    echo "====++++only when failed++++===="
                 }
             }
-           
-            }
-        /*stage ("sonar scanning") {
+          stage ("sonar scanning") {
             steps {
                 script { 
-                    def scannerHome = tool name: 'mySonarScanner';
-                    withSonarQubeEnv("mySonarqubeServer") {
-                        sh "${tool("mySonarScanner")}/bin/sonar-scanner \
-                        -Dsonar.projectKey=SimpleMaven \
-                        -Dsonar.sources=. \
+                    def scannerHome = tool name: 'SonarScanner';
+                    withSonarQubeEnv("SonarScanner") {
+                        sh "${tool("SonarScanner")}/bin/sonar-scanner \
+                        -Dsonar.projectKey=simple-java-maven-app \
                         -Dsonar.java.binaries=target \
-                        -Dsonar.host.url=http://44.197.132.246:9000/ \
-                        -Dsonar.login=12e2853ff7e7d0dd75ce2666eca6699aa3dc6d0a"
+                        -Dsonar.host.url=http://3.90.210.22:9000/ \
+                        -Dsonar.login=2f60a4d498a222e03738eddeddc43ce5796ea491"
                     }
                }
             }
-        }*/
+        }
         stage ("Upload to Nexus") {
             steps {
                 sh "mvn -gs ${WORKSPACE}/settings.xml deploy"
-               }
             }
-        
-    }
-    post{
-        always{
-            echo "========always========"
-        }
-        success{
-            echo "========pipeline executed successfully ========"
-            archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
-        }
-        failure{
-            echo "========pipeline execution failed========"
         }
     }
 }
