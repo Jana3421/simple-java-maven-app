@@ -48,7 +48,7 @@ pipeline{
             steps {
                 sh "mvn -gs ${WORKSPACE}/settings.xml deploy"
           }
-       }
+      }
     }
- }  
-    
+  }
+}
