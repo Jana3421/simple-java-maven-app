@@ -42,8 +42,9 @@ pipeline{
                         -Dsonar.host.url=http://54.198.175.171:9000/ \
                         -Dsonar.login=2f60a4d498a222e03738eddeddc43ce5796ea491"
                     }
-               }
+              }
             }
+          }
         stage ("Upload to Nexus") {
             steps {
                 sh "mvn -gs ${WORKSPACE}/settings.xml deploy"
