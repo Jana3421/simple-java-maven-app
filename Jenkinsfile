@@ -18,7 +18,7 @@ pipeline{
                 }
             }
         }
-        stage ("build") {
+        stage ("build"){
             steps{
                 sh 'mvn clean package'
             }
@@ -47,7 +47,7 @@ pipeline{
           stage ("Upload to Nexus") {
             steps {
                 sh "mvn -gs ${WORKSPACE}/settings.xml deploy"
-          }
+        }
       }
     }
   }
