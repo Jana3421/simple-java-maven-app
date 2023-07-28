@@ -1,5 +1,4 @@
-version: '3'  # Specify the version of the Compose file syntax
-
+version: '3' 
 services:
   web:  # Service for the Nginx web server
     image: nginx:latest  # Use the official Nginx image from Docker Hub
